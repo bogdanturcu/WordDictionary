@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Dictionary</title>
+
+    <style>
+        
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI';
+}
+
+section {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+section .searchForm h1 {
+    display: flex;
+    justify-content: center;
+    font-size: 40px;
+    padding: 0px 0px;
+    margin: 40px 0px 15px 0px;
+    font-weight: 500;
+}
+
+section .searchForm input[type=search] {
+    min-width: 400px;
+    margin: 20px 10px;
+    padding: 15px 20px;
+    background-color: #e4d9d9;
+    font-size: 18px;
+    border: none;
+    border-radius: 50px;
+    outline: none;
+    font-size: 22px;
+    box-shadow: 2px 2px 8px var(--box-shadow-color);
+    transition: box-shadow 0.5s;
+}
+
+section .searchForm input[type=search]:hover {
+    box-shadow: 5px 5px 10px var(--box-shadow-color);
+}
+
+section .searchForm input[type=search]:focus {
+    box-shadow: 5px 5px 10px var(--box-shadow-color);
+}
+
+section .searchForm input[type=button] {
+    margin: 0px 20px;
+    padding: 15px 40px;
+    background-color: #488aec;
+    color: #fff;
+    border: none;
+    font-size: 20px;
+    border-radius: 50px;
+    box-shadow: 10px 10px 15px #e3bbf3;
+    transition: box-shadow 0.5s;
+    outline: none;
+}
+
+section .searchForm input[type=button]:hover {
+    box-shadow: 5px 5px 15px #aaa;
+    background-color: #f1a566;
+}
+
+section .searchForm input[type=reset] {
+    margin: 0px 0px;
+    padding: 15px 40px;
+    background-color: #488aec;
+    color: #fff;
+    border: none;
+    font-size: 20px;
+    border-radius: 50px;
+    box-shadow: 10px 10px 15px #e3bbf3;
+    transition: box-shadow 0.5s;
+    outline: none;
+}
+
+section .searchForm input[type=reset]:hover {
+    box-shadow: 5px 5px 15px #aaa;
+    background-color: #f1a566;
+}
+
+section .searchResult {
+    visibility: hidden;
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    margin: 10px 400px;
+}
+
+section .searchResult div h1 {
+   font-size: 35px;
+}
+
+section .searchResult div p {
+    font-size: 28px;
+}
+    </style>
+    <script type="text/javascript">
+         function wordSearch() {
+    document.getElementById('searchResult').style.visibility = 'visible';
+
+    var word = document.getElementById('word');
+    var definition = document.getElementById('definition');
+    var example = document.getElementById('example');
+    var spell = document.getElementById('spell');
+
+    var wordToSearch = document.getElementById('searchBox').value;
+
+    var request1 = new XMLHttpRequest();
+    request1.open('GET', 'https://api.wordnik.com/v4/word.json/' + wordToSearch + '/definitions?limit=10&includeRelated=false&useCanonical=false&includeTags=false&api_key=e0d094e089e87c411680f08f6ab0e7be39143f84626e8c9e4', true);
+    request1.onload = function () {
+        var data = JSON.parse(this.response);
+        if (request1.status >= 200 && request1.status < 400) {
+            var i = Math.ceil(Math.random() * 10);      //  get a random number from 1 to 10
+            word.innerHTML = data[i].word;      //  get a random definition
+            definition.innerHTML = data[i].text;
+        } else {
+            word.innerHTML = "Error";
+            definition.innerHTML = "Error";
+        }
+    }
+    request1.send();
+
+    var request2 = new XMLHttpRequest();
+    request2.open('GET', 'https://api.wordnik.com/v4/word.json/' + wordToSearch + '/topExample?useCanonical=false&api_key=e0d094e089e87c411680f08f6ab0e7be39143f84626e8c9e4', true);
+    request2.onload = function () {
+        var data2 = JSON.parse(this.response);
+        if (request2.status >= 200 && request2.status < 400) {
+            example.innerHTML = data2.text;
+        } else {
+            example.innerHTML = "Error";
+        }
+    }
+    request2.send();
+
+    var request3 = new XMLHttpRequest();
+    request3.open('GET', 'https://api.wordnik.com/v4/word.json/' + wordToSearch + '/audio?useCanonical=false&limit=50&api_key=e0d094e089e87c411680f08f6ab0e7be39143f84626e8c9e4', true);
+    request3.onload = function () {
+        var data3 = JSON.parse(this.response);
+        if (request3.status >= 200 && request3.status < 400) {
+            var audio = document.createElement("AUDIO");
+            audio.setAttribute("src", data3[0].fileUrl);    //  set the source for audio in html tag
+            audio.setAttribute("controls", "controls");
+            audio.setAttribute("autoplay", "autoplay");
+            spell.appendChild(audio);
+
+        } else {
+            spell.innerHTML = "Error";
+        }
+    }
+    request3.send();
+}
+    </script>
+</head>
+
+<body>
+
+    <section>
+        <form class="searchForm">
+            <h1>Word Dictionary</h1>
+            <input type="search" name="searchBox" id="searchBox" placeholder="word to search">
+            <input type="button" name="submit" value="submit" onclick="wordSearch()">
+            <input type="reset" value="reset" onclick="window.location.reload()">
+        </form>
+
+        <div class="searchResult" id="searchResult">
+            <div>
+                <h1>Word</h1>
+                <p id="word"></p>
+            </div>
+            <div>
+                <h1>Definition</h1>
+                <p id="definition"></p>
+            </div>
+            <div>
+                <h1>Example</h1>
+                <p id="example"></p>
+            </div>
+            <div>
+                <h1>How To Spell?</h1>
+                <p id="spell"></p>
+            </div>
+        </div>
+    </section>
+
+    
+    <script src="js/main.js"></script>
+        
+</body>
+
+</html>
