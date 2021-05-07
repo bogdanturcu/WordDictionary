@@ -14,6 +14,7 @@ Avand in vedere ca wordnik foloseste mai multe surse pentru preluarea definitilo
 (ex: Pig = Any of various mammals of the family Suidae, having short legs, hooves with two weight-bearing toes, bristly hair, and a cartilaginous snout used for digging, including the domesticated hog SAU Pig = Any police officer). 
 Cum orice plus are de regula si un drawback daca cautam destul putem gasi cuvinte ca nu au o definitie prestabilita. 
 API-ul necesita key care poate sa fie obtinuta pe gratis prin creearea unui cont pe site-ul https://developer.wordnik.com/
+
 ![image](https://user-images.githubusercontent.com/72883464/117491531-fcf84f00-af78-11eb-84c0-298292bedab4.png)
 
 Flux de date:
